@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('header'); -%>
+
+  <body>
+    <%- include('nav'); -%>
+
+    <section id="hero" class="d-flex align-items-center">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 pt-5 pt-lg-0 order-2 order-lg-1">
+            <h1>GMM O Shopping</h1>
+            <h2>&#8220; Lucky Wheel Lucky Draw &#8221;</h2>
+            <h5>Scan สายข้อมือก่อนเข้างานเพื่อลุ้นรับรางวัล</h5>
+            <h5>ร่วมลุ้นรางวัลด้วยกัน ร่วมสนุกรับรางวัล</h5>
+            <br />
+            <h6>24 ธันวาคม 2564</h6>
+          </div>
+          <div class="col-lg-6 order-1 order-lg-2 hero-img">
+            <img
+              src="assets/img/Lucky-draw-Banner.png"
+              class="img-fluid animated"
+              alt="Lucky Wheel Lucky Draw"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main id="main">
+        <section id="footer" class="footer">
+            <div class="footer-newsletter" data-aos="fade-up">
+                <div class="container">
+                  <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                      <h4>กรุณากรอกเลขที่</h4>
+                      <p>โดยไม่ต้องใส่เครื่องหมาย -ตัวอย่าง 999 </p>
+                      <% if (typeof messages !== 'undefined' && messages.length > 0 ) { %>
+                      <div class="alert alert-danger" role="alert">
+                        <%= messages %>
+                      </div>
+                      <% } %>
+                      <form action="/lucky" method="post">
+                        <input type="text" id="f_idCard" class="form-control" name="f_idCard"
+                        placeholder="เลขที่" maxlength="3" />
+                        <input
+                        type="submit"
+                        value="ตรวจสอบข้อมูล"
+                      />
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </section>
+        <section id="contact" class="contact">
+            <div class="container">
+                <div class="section-title" data-aos="fade-up">
+                  <button
+                  style="background: #4CC74C; color: #fff"
+                  type="button"
+                  class="btn"
+                  data-toggle="collapse"
+                  data-target="#demo"
+                >ข้อกำหนดและเงื่อนไข
+                </button>
+                </div>
+                <div id="demo" class="row collapse">
+                  <div class="col-lg-5 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
+                    <div class="info">
+                        <div
+                        class="d-flex align-items-center justify-content-center about-img"
+                      >
+                        <img
+                          src="img/Sabina_web.jpg"
+                          class="img-fluid"
+                          alt=""
+                          data-aos="zoom-in"
+                        />
+                      </div>
+                  </div>
+                  </div>
+                  <div class="col-lg-7 mt-5 mt-lg-0 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="200">
+                    <div class="php-email-form">
+                      <div id="wheel" class="container">
+                        <div class="row">
+                          <div class="col-lg-6 pt-5 pt-lg-0 order-2 order-lg-1">
+                            <canvas
+                              id="canvas"
+                              //width="450"
+                              //height="450"
+                              data-responsiveMinWidth=" "
+                              data-responsiveScaleHeight="true"
+                              onClick="startSpin();"
+                            >
+                            </canvas>
+                          </div>
+                          <br />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+</section>
+    </main>
+    <script>
+      //   document.getElementById("myImg").style.visibility = "hidden"
+     let theWheel = new Winwheel({
+         'numSegments'  : <%= countLucky %>,     // Specify number of segments.
+         'textFontSize' : 17,    // Set font size as desired.
+         'responsive'   : true,  // This wheel is responsive!
+         'segments'     : <%- JSON.stringify(dataWheel) %>,       // Define segments including colour and text.
+         'animation' :           // Specify the animation to use.
+         {
+             'type'     : 'spinToStop',
+             'duration' : 5,     // Duration in seconds.
+             'spins'    : 8,     // Number of complete spins.
+             'callbackFinished' : alertPrize,
+             'callbackSound'    : playSound,
+         }
+     });
+     function startSpin()
+     {
+         theWheel.stopAnimation(false);
+         theWheel.rotationAngle = theWheel.rotationAngle % 360;
+         theWheel.startAnimation();
+
+     }
+     let audio = new Audio('tick.mp3');
+     function playSound()
+     {
+         audio.pause();
+         audio.currentTime = 0;
+         audio.play();
+     }
+     function alertPrize(indicatedSegment)
+     {
+       var popup = indicatedSegment.text;
+       switch(popup) {
+         case "AirCon":
+           img = "lucky/AirCon.jpg";
+           break;
+         case "IPhone":
+           img = "lucky/iPhone.jpg";
+           break;
+         case "Starbucks":
+           img = "lucky/V1K.jpg";
+           break;
+           case "Sharp":
+           img = "lucky/V10K.jpg";
+           break;
+           case "Discount":
+           img = "lucky/V200K.jpg";
+           break;
+         default:
+           img = "logo.jpeg";
+       }
+    //     document.getElementById("wheel").style.visibility = "hidden";
+     //    document.getElementById("myImg").style.visibility = "visible";
+       //  document.getElementById("imagesSrc").src = img
+         document.getElementById("winnerLabel").value =indicatedSegment.text;
+   console.log(popup);
+
+   $(document).ready(function(){ 
+     $('#autosave').trigger('click');
+     console.log('test : '+ popup);
+     $('#form1').submit();
+     document.getElementById("winnerLabel").value = popup;
+   });
+
+     }
+
+     function resetWheel()
+     {
+         theWheel.stopAnimation(false);  // Stop the animation, false as param so does not call callback function.
+         theWheel.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
+         theWheel.draw();                // Call draw to render changes to the wheel.
+         document.getElementById('pw1').className = "";  // Remove all colours from the power level indicators.
+         document.getElementById('pw2').className = "";
+         document.getElementById('pw3').className = "";
+     //    document.getElementById("myImg").style.visibility = "hidden";
+     //    document.getElementById("wheel").style.visibility = "visible";
+         wheelSpinning = false;          // Reset to false to power buttons and spin can be clicked again.
+     }
+function preventBack() {window.history.forward();}  setTimeout("preventBack()", 0);  window.onunload = function () {null};
+</script>
+    <%- include('footer'); -%>
+  </body>
+</html>
